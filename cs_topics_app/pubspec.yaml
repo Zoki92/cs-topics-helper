@@ -1,0 +1,26 @@
+name: cs_topics_app
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.3
+  flutter_bloc: ^4.0.1
+  equatable: ^1.2.0
+  http: ^0.12.1
+  get_it: ^4.0.2
+  rxdart: ^0.24.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mockito: ^4.1.1
+  bloc_test: ^5.1.0
+flutter:
+  uses-material-design: true
+
