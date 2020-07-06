@@ -17,6 +17,14 @@ class AnimationFileSerializer(serializers.ModelSerializer):
 class ContentSerializer(serializers.ModelSerializer):
     """Serializer class for content type info"""
 
+    def __init__(self, *args, **kwargs):
+        exclude_fields = kwargs.pop("exclude_fields", None)
+        super().__init__(*args, **kwargs)
+
+        if exclude_fields:
+            for field_name in exclude_fields:
+                self.fields.pop(field_name)
+
     animations = AnimationFileSerializer(many=True, read_only=True)
 
     class Meta:
@@ -45,8 +53,7 @@ class DataStructureSerializer(serializers.ModelSerializer):
 
     def get_content(self, obj):
         qset = obj.contents.all()
-        print("here qset: ", qset)
-        return [ContentSerializer(m).data for m in qset]
+        return [ContentSerializer(m, exclude_fields=["animations"]).data for m in qset]
 
 
 class AlgorithmSerializer(serializers.ModelSerializer):

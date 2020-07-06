@@ -1,7 +1,5 @@
-from django.shortcuts import render
 from django.db.models import Prefetch
 from rest_framework import viewsets
-from rest_framework.response import Response
 from .models import DataStructure, Content, Algorithm, Category
 from .serializers import (
     DataStructureSerializer,
@@ -16,7 +14,7 @@ class DataStructuresListView(viewsets.ModelViewSet):
     serializer_class = DataStructureSerializer
 
     def get_queryset(self):
-        return DataStructure.objects.all()
+        return DataStructure.objects.all().prefetch_related("contents")
 
 
 class AlgorithmsListView(viewsets.ModelViewSet):
