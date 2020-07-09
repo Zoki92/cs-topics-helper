@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 from django.db.models import Q
+from markdownx.models import MarkdownxField
 
 
 class Category(models.Model):
@@ -24,7 +25,9 @@ class DataStructure(models.Model):
 
     name = models.CharField(max_length=50)
 
-    contents = models.ManyToManyField("Content", related_name="data_structure")
+    markdown_content = models.OneToOneField(
+        "DataStructureMarkdown", on_delete=models.PROTECT
+    )
 
     category = models.ForeignKey(
         "Category", on_delete=models.DO_NOTHING, blank=True, null=True,
@@ -43,8 +46,6 @@ class Algorithm(models.Model):
         verbose_name_plural = "Algorithms"
 
     name = models.CharField(max_length=50)
-
-    contents = models.ManyToManyField("Content", related_name="algorithm",)
 
     category = models.ForeignKey(
         "Category",
@@ -114,3 +115,17 @@ class AnimationFile(models.Model):
     )
 
     animation_file = models.FileField(upload_to="uploads", blank=True, null=True)
+
+
+class DataStructureMarkdown(models.Model):
+    """Model for creating datastructure markdown objects"""
+
+    class Meta:
+        verbose_name_plural = "Data Structure Markdowns"
+
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    content = MarkdownxField()
+
+    def __str__(self):
+        return f"{self.name}"

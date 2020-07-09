@@ -5,7 +5,12 @@ from .models import (
     DataStructure,
     Algorithm,
     AnimationFile,
+    DataStructureMarkdown,
 )
+
+from markdownx.admin import MarkdownxModelAdmin
+
+admin.site.register(DataStructureMarkdown, MarkdownxModelAdmin)
 
 
 @admin.register(AnimationFile)
@@ -25,38 +30,11 @@ class CategoryAdmin(admin.ModelAdmin):
     """Admin model for category"""
 
 
-@admin.register(Content)
-class ContentAdmin(admin.ModelAdmin):
-    """Content admin class"""
-
-    inlines = [
-        AnimationFileInline,
-    ]
-
-
-class DataStructureContentInline(admin.StackedInline):
-    """Content  inline panel"""
-
-    model = DataStructure.contents.through
-    extra = 1
-
-
-class AlgorithmContentInline(admin.StackedInline):
-    """Content  inline panel"""
-
-    model = Algorithm.contents.through
-    extra = 1
-
-
 @admin.register(DataStructure)
 class DataStructureAdmin(admin.ModelAdmin):
     """Data Structure Admin class"""
-
-    inlines = [DataStructureContentInline]
 
 
 @admin.register(Algorithm)
 class AlgorithmAdmin(admin.ModelAdmin):
     """Algorithm Structure Admin class"""
-
-    inlines = [AlgorithmContentInline]

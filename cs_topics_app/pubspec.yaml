@@ -15,6 +15,7 @@ dependencies:
   http: ^0.12.1
   get_it: ^4.0.2
   rxdart: ^0.24.1
+  flutter_markdown: ^0.4.2
 
 dev_dependencies:
   flutter_test:

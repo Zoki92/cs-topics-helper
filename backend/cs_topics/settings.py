@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "data_structures",
     "rest_framework",
     "corsheaders",
+    "markdownx",
 ]
 
 MIDDLEWARE = [
@@ -118,3 +119,12 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
