@@ -1,4 +1,6 @@
-class DataStructure {
+import 'package:equatable/equatable.dart';
+
+class DataStructure extends Equatable {
   final String name;
   final String created;
   final String category;
@@ -25,9 +27,12 @@ class DataStructure {
         .map<DataStructure>((json) => DataStructure.fromJson(json))
         .toList();
   }
+
+  @override
+  List<Object> get props => [name, category, markdownContent];
 }
 
-class MarkDownContent {
+class MarkDownContent extends Equatable {
   final String name;
   final String content;
 
@@ -36,4 +41,7 @@ class MarkDownContent {
   static MarkDownContent fromJson(var json) {
     return MarkDownContent(content: json['content'], name: json['name']);
   }
+
+  @override
+  List<Object> get props => [name, content];
 }

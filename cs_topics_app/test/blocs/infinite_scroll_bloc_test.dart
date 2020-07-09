@@ -1,6 +1,6 @@
 import 'package:cs_topics_app/bloc/bloc.dart';
 import 'package:cs_topics_app/models/data_structure.dart';
-import 'package:cs_topics_app/repositories/repository.dart';
+import 'package:cs_topics_app/repository/repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -9,24 +9,27 @@ import '../mocks.dart';
 void main() {
   group('InfiniteScrollBloc tests', () {
     InfiniteScrollBloc infiniteScrollBloc;
-    DataRepository dataRepository;
+    DataStructureRepository dataRepository;
     DataStructure ds;
     DataStructure ds2;
+    MarkDownContent md;
 
     setUp(() {
       dataRepository = MockDataRepository();
       infiniteScrollBloc = InfiniteScrollBloc(dataRepository);
+      md = MarkDownContent(name: "Linked List", content: "some content");
       ds = DataStructure(
-        id: 1,
         name: "Linked List",
         created: DateTime.now().toString(),
-        contents: [],
+        category: "Data Structures",
+        markdownContent: md,
       );
+
       ds2 = DataStructure(
-        id: 1,
         name: "Array",
         created: DateTime.now().toString(),
-        contents: [],
+        category: "Array",
+        markdownContent: md,
       );
     });
 
@@ -36,7 +39,7 @@ void main() {
 
     test('Event is fetch data, state is initial and has reached end of list',
         () {
-      when(dataRepository.getDataAndNextUrl()).thenAnswer(
+      when(dataRepository.getDataStructureList()).thenAnswer(
         (_) => Future.value({
           'data': [ds],
           'nextUrl': null
@@ -44,7 +47,8 @@ void main() {
       );
       final expectedResponse = [
         InfiniteScrollInitial(),
-        DataFetchSuccess(data: [ds], nextUrl: null, hasReachedMax: true),
+        InfiteScrollSuccess(
+            dataStructures: [ds], nextUrl: null, hasReachedMax: true),
       ];
 
       expectLater(infiniteScrollBloc, emitsInOrder(expectedResponse));
@@ -54,7 +58,7 @@ void main() {
     test(
         'Event is fetch data, state is initial state and has not reached end of list',
         () {
-      when(dataRepository.getDataAndNextUrl()).thenAnswer(
+      when(dataRepository.getDataStructureList()).thenAnswer(
         (_) => Future.value({
           'data': [ds],
           'nextUrl': 'nextUrl'
@@ -63,7 +67,11 @@ void main() {
 
       final expectedResponse = [
         InfiniteScrollInitial(),
-        DataFetchSuccess(data: [ds], nextUrl: 'nextUrl', hasReachedMax: false),
+        InfiteScrollSuccess(
+          dataStructures: [ds],
+          nextUrl: 'nextUrl',
+          hasReachedMax: false,
+        ),
       ];
 
       expectLater(infiniteScrollBloc, emitsInOrder(expectedResponse));
@@ -89,11 +97,11 @@ void main() {
     //   infiniteScrollBloc.add(FetchData());
     // });
     test('Event is fetch data, and there is server problem', () {
-      when(dataRepository.getDataAndNextUrl()).thenThrow("oops");
+      when(dataRepository.getDataStructureList()).thenThrow("oops");
 
       final expectedResponse = [
         InfiniteScrollInitial(),
-        DataFetchFailed(message: InfiniteScrollBloc.ERROR_MSG),
+        InfiteScrollFailure(message: InfiniteScrollBloc.SERVER_ERROR),
       ];
 
       expectLater(infiniteScrollBloc, emitsInOrder(expectedResponse));

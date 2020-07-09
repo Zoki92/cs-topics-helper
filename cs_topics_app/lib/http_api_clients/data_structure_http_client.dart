@@ -13,6 +13,7 @@ class DataStructureHttpClient extends BaseHttpClient {
 
   Future<Map> getDataStructuresListFromServer(String url) async {
     String newUrl = url ?? dataStructureListUrl;
+
     http.Response response = await getApiCallResponse(
       errorMessage: 'Failed to get data from the server.',
       url: newUrl,

@@ -1,27 +1,27 @@
-import 'package:cs_topics_app/bloc/startapp_bloc/on_appstart_bloc.dart';
+import 'package:cs_topics_app/bloc/bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('OnAppstartBloc', () {
-    OnAppstartBloc onAppstartBloc;
+    OnAppStartBloc onAppstartBloc;
     setUp(() {
-      onAppstartBloc = OnAppstartBloc();
+      onAppstartBloc = OnAppStartBloc();
     });
 
     test('initial state is OnAppstartInitial', () {
-      expect(onAppstartBloc.initialState, OnAppstartInitial());
+      expect(onAppstartBloc.initialState, isA<OnAppStartInitial>());
     });
 
     test('on GetInitialDataEvent', () {
       final expectedResponse = [
-        OnAppstartInitial(),
-        Loading(),
-        SplashPageShown(),
+        isA<OnAppStartInitial>(),
+        isA<OnAppStartLoading>(),
+        isA<OnAppStartLoaded>(),
       ];
 
       expectLater(onAppstartBloc, emitsInOrder(expectedResponse));
 
-      onAppstartBloc.add(ShowSplashPage());
+      onAppstartBloc.add(AppStarted());
     });
 
     tearDown(() {
