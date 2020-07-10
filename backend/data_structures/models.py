@@ -26,7 +26,7 @@ class DataStructure(models.Model):
     name = models.CharField(max_length=50)
 
     markdown_content = models.OneToOneField(
-        "DataStructureMarkdown", on_delete=models.PROTECT
+        "Content", on_delete=models.PROTECT, blank=True, null=True,
     )
 
     category = models.ForeignKey(
@@ -54,6 +54,9 @@ class Algorithm(models.Model):
         null=True,
         related_name="algorithms",
     )
+    markdown_content = models.OneToOneField(
+        "Content", on_delete=models.PROTECT, blank=True, null=True,
+    )
 
     created = models.DateTimeField(auto_now_add=True)
 
@@ -69,39 +72,6 @@ class Algorithm(models.Model):
         return f"{self.name}"
 
 
-class Content(models.Model):
-    """Visual representation class that sorts media about
-    the algorithm/data structure, provides visual representation
-    """
-
-    class Meta:
-        verbose_name_plural = "Contents"
-
-    class MediaType(models.TextChoices):
-        """Enum consisting of content type descriptors"""
-
-        GIF = "gif"
-        IMG = "img"
-        VIDEO = "video"
-        CODE = "code"
-        TEXT = "text"
-
-    order_of_content = models.PositiveIntegerField()
-
-    media_type = models.CharField(
-        choices=MediaType.choices, max_length=50, null=True, blank=True
-    )
-
-    name = models.CharField(max_length=50)
-
-    visual = models.FileField(upload_to="uploads", blank=True, null=True)
-
-    text = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.text}"
-
-
 class AnimationFile(models.Model):
     """Animation files for algorithms"""
 
@@ -111,13 +81,13 @@ class AnimationFile(models.Model):
     media_type = models.CharField(max_length=50, default="rive-animation")
 
     content = models.ForeignKey(
-        "Content", on_delete=models.DO_NOTHING, related_name="animations",
+        "Algorithm", on_delete=models.DO_NOTHING, related_name="animations",
     )
 
     animation_file = models.FileField(upload_to="uploads", blank=True, null=True)
 
 
-class DataStructureMarkdown(models.Model):
+class Content(models.Model):
     """Model for creating datastructure markdown objects"""
 
     class Meta:

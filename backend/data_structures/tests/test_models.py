@@ -1,53 +1,64 @@
-from django.test import TestCase
-from ..models import Category, DataStructure
+"""Testing Models"""
+import pytest
+
+from data_structures.models import Category, DataStructure, Content, Algorithm
 
 
-class CategoryModelTest(TestCase):
-    """Category test class"""
-
-    def test_string_representation(self):
-        """testing models str representation"""
-        category = Category(name="Array")
-        self.assertEqual('Array', str(category))
-
-    def test_saving_and_retrieving_categories(self):
-        """testing db for category actions"""
-        category = Category(name="Array")
-        category.save()
-
-        category_2 = Category(name="Stack")
-        category_2.save()
-
-        saved_items = Category.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        fetched_category = saved_items[0]
-        fetched_category_2 = saved_items[1]
-
-        self.assertEqual(fetched_category.name, category.name)
-        self.assertEqual(fetched_category_2.name, category_2.name)
+@pytest.mark.django_db
+def test_category_create():
+    movie = Category(name="Data Structures")
+    movie.save()
+    first = Category.objects.first()
+    assert Category.objects.count() == 1
+    assert first.name == movie.name
 
 
-class DataStructureModelTest(TestCase):
-    """DataStructure test class"""
+@pytest.mark.django_db
+def test_data_structure_create():
+    md = Content(name="Linked List", content="some content")
+    category = Category(name="Data Structures")
+    category.save()
+    md.save()
+    ds = DataStructure(name="Linked List", markdown_content=md, category=category,)
+    ds.save()
 
-    def test_string_representation(self):
-        """testing models str representation"""
-        ds = DataStructure(name="Binary Search Tree")
-        self.assertEqual("Binary Search Tree", str(ds))
+    ds_from_db = DataStructure.objects.first()
+    assert DataStructure.objects.count() == 1
+    assert ds_from_db.name == ds.name
+    assert ds_from_db.markdown_content == md
+    assert ds_from_db.category == category
 
-    def test_saving_and_retrieving_data_structures(self):
-        """testing db for category actions"""
-        ds = DataStructure(name="Binary Search Tree")
-        ds_2 = DataStructure(name="Tree")
 
-        ds_2.save()
+@pytest.mark.django_db
+def test_content_create():
+    content = Content(name="Linked List", content="some content")
+    content.save()
+    from_db = Content.objects.first()
 
-        ds.save()
+    assert Content.objects.count() == 1
+    assert from_db.name == content.name
+    assert from_db.content == content.content
 
-        all_ds = DataStructure.objects.all()
 
-        self.assertEqual(all_ds.count(), 2)
+@pytest.mark.django_db
+def test_algorithm_create():
+    md = Content(name="Linked List", content="some content")
+    md.save()
+    category = Category(name="Data Structures")
+    category.save()
+    ds = DataStructure(name="Linked List", markdown_content=md, category=category,)
+    ds.save()
 
-        self.assertEqual(all_ds[0].name, ds_2.name)
-        self.assertEqual(all_ds[1].name, ds.name)
+    algorithm = Algorithm(
+        name="Linked List Algorithm",
+        category=category,
+        markdown_content=md,
+        data_structure=ds,
+    )
+    algorithm.save()
+    from_db = Algorithm.objects.first()
+    assert Algorithm.objects.count() == 1
+    assert from_db.name == algorithm.name
+    assert from_db.category == algorithm.category
+    assert from_db.markdown_content == algorithm.markdown_content
+    assert from_db.data_structure == algorithm.data_structure

@@ -1,16 +1,15 @@
 from django.contrib import admin
 from .models import (
     Category,
-    Content,
     DataStructure,
     Algorithm,
     AnimationFile,
-    DataStructureMarkdown,
+    Content,
 )
 
 from markdownx.admin import MarkdownxModelAdmin
 
-admin.site.register(DataStructureMarkdown, MarkdownxModelAdmin)
+admin.site.register(Content, MarkdownxModelAdmin)
 
 
 @admin.register(AnimationFile)
